@@ -1,0 +1,34 @@
+# Modelos (grandes, se descargan)
+models/checkpoints/*.safetensors
+models/loras/*.safetensors
+models/vae/*.safetensors
+models/upscale_models/*.safetensors
+
+# Imágenes generadas
+output/*
+!output/.gitkeep
+
+# Inputs
+input/*
+!input/.gitkeep
+
+# Plugins
+custom_nodes/
+
+# Entorno
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Docker
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
