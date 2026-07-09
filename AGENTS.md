@@ -6,6 +6,7 @@ ComfyUI + Docker + GPU para generación de imágenes con IA. Modelo principal: S
 ## Stack
 
 - **ComfyUI**: Frontend/backend de generación de imágenes
+- **Frontend**: FastAPI + Jinja2 (servicio Docker separado, puerto 8080)
 - **Docker**: Contenedor CUDA 12.2 + Ubuntu 22.04
 - **GPU**: NVIDIA RTX 5050 (8GB VRAM)
 - **Python 3.11**: Dentro del contenedor (no hay Python en Windows host)
@@ -14,14 +15,20 @@ ComfyUI + Docker + GPU para generación de imágenes con IA. Modelo principal: S
 ## Comandos útiles
 
 ```bash
-# Construir y levantar
+# Configurar entorno
+cp .env.example .env
+
+# Construir y levantar (incluye frontend)
 docker compose up -d --build
 
-# Ver logs
-docker compose logs -f comfyui
+# Ver logs de ComfyUI
+docker compose logs -f visual-comfyui-1
+
+# Ver logs del frontend
+docker compose logs -f frontend
 
 # Ejecutar comando dentro del contenedor
-docker exec comfyui python3 /app/scripts/generate.py [args]
+docker exec visual-comfyui-1 python3 /app/scripts/generate.py [args]
 
 # Ver estado
 docker compose ps
@@ -35,9 +42,15 @@ docker compose down
 ```
 Dockerfile                    # Imagen con CUDA + auto-descarga modelo al build
 docker-compose.yml            # GPU passthrough via nvidia runtime
-.env                          # Config: puerto, args, modelo
+.env.example                  # Template de configuración (copiar a .env)
+.env                          # Config: puerto, args, modelo (NO versionar)
 models/checkpoints/           # Modelos .safetensors (~7 GB SDXL)
 workflows/                    # Workflows JSON de ComfyUI
+frontend/                     # Servicio frontend web (FastAPI)
+  app.py                      #   API proxy + rutas
+  Dockerfile                  #   Dockerfile del frontend
+  templates/index.html        #   UI (HTML + JS)
+  static/style.css            #   Estilos
 scripts/generate.py           # Script para generar desde CLI
 scripts/download_models.py    # Descarga modelos SDXL/FLUX
 output/                       # Imágenes generadas
@@ -52,11 +65,19 @@ custom_nodes/                 # Plugins
 - No hay Python en Windows host; todo corre dentro del contenedor
 - Usar `--normalvram --force-fp16` por defecto (RTX 5050 8GB)
 - Si hay OOM, cambiar a `--lowvram`
+- El `.env` y los `.safetensors` están en `.gitignore`
 
 ## Workflows
 
 - `workflow_sdxl.json`: Modelo SDXL, sampler euler, 30 steps, cfg 7, 1024x1024
 - `workflow_flux_nf4.json`: Modelo FLUX, sampler euler, 28 steps, cfg 1, 1024x1024
+
+## Frontend web
+
+- URL: `http://localhost:8080`
+- Proxy automático a ComfyUI API (no requiere configurar CORS)
+- Parámetros: prompt, negativo, modelo, seed, steps, cfg, resolución
+- Descarga directa de imagen y copia de prompt al portapapeles
 
 ## Notas
 
