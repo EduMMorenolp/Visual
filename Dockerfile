@@ -1,7 +1,7 @@
-FROM pytorch/pytorch:2.5.1-cuda12.1-cudnn9-runtime
+﻿FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-runtime
 
-LABEL description="ComfyUI - AI Image Generation (SDXL)"
-LABEL version="4.0"
+LABEL description="ComfyUI - AI Image Generation (SDXL + Blackwell)"
+LABEL version="4.1"
 
 WORKDIR /app
 
@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrender-dev \
     libgomp1 \
     ffmpeg \
+    gcc \
+    g++ \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git lfs install

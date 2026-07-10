@@ -40,7 +40,7 @@ docker compose down
 ## Estructura
 
 ```
-Dockerfile                    # Imagen con CUDA + PyTorch 2.6 + descarga modelo al build
+Dockerfile                    # Imagen con CUDA 12.8 + PyTorch 2.7 + descarga modelo al build
 docker-compose.yml            # GPU passthrough via nvidia runtime
 .env.example                  # Template de configuración (copiar a .env)
 .env                          # Config: puerto, args, modelo (NO versionar)
@@ -67,6 +67,7 @@ custom_nodes/                 # Plugins
 - No hay Python en Windows host; todo corre dentro del contenedor
 - Usar `--normalvram --force-fp16` por defecto (RTX 5050 8GB)
 - Si hay OOM, cambiar a `--lowvram`
+- Con Blackwell (sm_120), ComfyUI puede autoajustar a `LOW_VRAM` en primera generación
 - El `.env` y los `.safetensors` están en `.gitignore`
 
 ## Workflows
@@ -85,5 +86,6 @@ custom_nodes/                 # Plugins
 
 - El modelo SDXL se descarga automáticamente durante el build de Docker
 - Para FLUX, ejecutar `python3 /app/scripts/download_models.py` manualmente dentro del contenedor
-- La primera generación puede tardar ~1-2 min (carga del modelo a VRAM)
+- La primera generación puede tardar ~3 min (carga del modelo a VRAM + compilación de kernels Blackwell)
 - No modificar `docker-compose.yml` sin verificar compatibilidad con GPU en Windows
+- PyTorch ≥2.7.0 + CUDA ≥12.8 requerido para RTX 5050 (Blackwell sm_120)

@@ -4,6 +4,17 @@ Todas las modificaciones notables de este proyecto se documentarán aquí.
 
 ## [Unreleased]
 
+### v4.1.0 - Soporte para NVIDIA Blackwell (RTX 5050)
+
+- **Changed**: Actualización de PyTorch 2.5.1+cu121 → 2.7.0+cu128 para soporte de arquitectura Blackwell (sm_120). La RTX 5050 requiere CUDA ≥12.8 y PyTorch ≥2.7.0. Se cambió la imagen base a `pytorch/pytorch:2.7.0-cuda12.8-cudnn9-runtime`. [2026-07-10]
+  * **Files (Archivos)**: `Dockerfile` (imagen base, versión 4.1). [2026-07-10]
+
+- **Added**: Compiladores `gcc`/`g++` en la imagen Docker, necesarios para Triton 3.3.0 incluido con PyTorch 2.7.0. [2026-07-10]
+  * **Files (Archivos)**: `Dockerfile` (línea 20-21). [2026-07-10]
+
+- **Changed**: Documentación actualizada en `AGENTS.md`: versión de PyTorch 2.7, tiempos de primera generación (~3 min), nota sobre autoajuste `LOW_VRAM` en Blackwell, y requisito PyTorch ≥2.7.0 + CUDA ≥12.8 para RTX 5050. [2026-07-10]
+  * **Files (Archivos)**: `AGENTS.md`. [2026-07-10]
+
 ### v3.1.0 - Frontend web para generación de imágenes
 
 - **Added**: Frontend web con FastAPI + Jinja2 para generar imágenes desde el navegador. Interfaz con formulario de prompt, prompt negativo, selección de modelo (SDXL/FLUX), seed, steps, CFG scale y resolución. Incluye visualización de la imagen generada, descarga directa y copia de prompt. Proxy automático a la API de ComfyUI. [2026-07-09]
