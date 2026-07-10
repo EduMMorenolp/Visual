@@ -4,7 +4,7 @@ description: >-
   Trigger when the user asks to create, generate, render, or imagine an image
   from a text description. Also when they say "haz una imagen de...", 
   "genera un render...", or "crea una imagen con IA".
-mode: subagent
+mode: primary
 permission:
   bash: allow
   read: allow
