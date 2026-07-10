@@ -72,6 +72,8 @@ custom_nodes/                 # Plugins
 
 ## Generación de imágenes
 
+Puedes usar `@generate-image` para que un subagente especializado maneje todo el flujo automáticamente.
+
 ### Flujo
 1. Usuario pide generar una imagen con un prompt simple
 2. El asistente **mejora el prompt** añadiendo términos de calidad, iluminación, estilo y detalles técnicos relevantes para SDXL
