@@ -70,6 +70,22 @@ custom_nodes/                 # Plugins
 - Con Blackwell (sm_120), ComfyUI puede autoajustar a `LOW_VRAM` en primera generación
 - El `.env` y los `.safetensors` están en `.gitignore`
 
+## Generación de imágenes
+
+### Flujo
+1. Usuario pide generar una imagen con un prompt simple
+2. El asistente **mejora el prompt** añadiendo términos de calidad, iluminación, estilo y detalles técnicos relevantes para SDXL
+3. El asistente **muestra el prompt mejorado** y pregunta si el usuario quiere ajustar parámetros (modelo, seed, steps, resolución, etc.)
+4. Con conformidad del usuario, ejecuta `docker exec visual-comfyui-1 python3 /app/scripts/generate.py --prompt "..."`
+
+### Técnicas de mejora de prompt
+- Añadir términos de calidad: `cinematic lighting`, `highly detailed`, `8k`, `photorealistic`, `intricate details`, `sharp focus`
+- Especificar iluminación: `volumetric lighting`, `dramatic shadows`, `golden hour`, `studio lighting`, `rim light`
+- Describir estilo: `cinematic`, `photorealistic`, `stylized`, `concept art`, `trending on ArtStation`
+- Añadir contexto ambiental: `epic composition`, `dynamic pose`, `wide angle`, `intricate background`
+- **Importante**: No exceder ~100 palabras. SDXL funciona mejor con prompts concisos pero descriptivos.
+- Para FLUX: usar prompts más naturales y descriptivos, evitar exceso de tags estilo SDXL.
+
 ## Workflows
 
 - `workflow_sdxl.json`: Modelo SDXL, sampler euler, 30 steps, cfg 7, 1024x1024
