@@ -5,10 +5,10 @@ ComfyUI + Docker + GPU para generación de imágenes con IA. Modelo principal: S
 
 ## Stack
 
-- **ComfyUI**: Frontend/backend de generación de imágenes
-- **Frontend**: FastAPI + Jinja2 (servicio Docker separado, puerto 8080)
-- **Docker**: Contenedor CUDA 12.2 + Ubuntu 22.04
-- **GPU**: NVIDIA RTX 5050 (8GB VRAM)
+- **ComfyUI**: Backend de generación de imágenes
+- **Frontend**: Vite + Vanilla JS (puerto 8080, se ejecuta local en Windows)
+- **Docker**: Contenedor CUDA 12.8 + Ubuntu 22.04
+- **GPU**: NVIDIA RTX 5050 (8GB VRAM, sm_120)
 - **Python 3.11**: Dentro del contenedor (no hay Python en Windows host)
 - **API REST**: ComfyUI expone endpoints en puerto 8188
 
@@ -18,14 +18,14 @@ ComfyUI + Docker + GPU para generación de imágenes con IA. Modelo principal: S
 # Configurar entorno
 cp .env.example .env
 
-# Construir y levantar (incluye frontend)
-docker compose up -d --build
+# Construir y levantar ComfyUI
+docker compose up -d --build visual-comfyui
 
 # Ver logs de ComfyUI
 docker compose logs -f visual-comfyui-1
 
-# Ver logs del frontend
-docker compose logs -f frontend
+# Iniciar frontend Vite (local, NO docker)
+cd frontend && npm run dev
 
 # Ejecutar comando dentro del contenedor
 docker exec visual-comfyui-1 python3 /app/scripts/generate.py [args]
@@ -40,17 +40,19 @@ docker compose down
 ## Estructura
 
 ```
-Dockerfile                    # Imagen con CUDA + auto-descarga modelo al build
+Dockerfile                    # Imagen con CUDA + PyTorch 2.6 + descarga modelo al build
 docker-compose.yml            # GPU passthrough via nvidia runtime
 .env.example                  # Template de configuración (copiar a .env)
 .env                          # Config: puerto, args, modelo (NO versionar)
 models/checkpoints/           # Modelos .safetensors (~7 GB SDXL)
 workflows/                    # Workflows JSON de ComfyUI
-frontend/                     # Servicio frontend web (FastAPI)
-  app.py                      #   API proxy + rutas
-  Dockerfile                  #   Dockerfile del frontend
-  templates/index.html        #   UI (HTML + JS)
-  static/style.css            #   Estilos
+frontend/                     # Frontend Vite (Vanilla JS)
+  index.html                  #   HTML principal
+  vite.config.js              #   Proxy a ComfyUI en localhost:8188
+  src/main.js                 #   Lógica JS (inyección workflow, polling)
+  src/style.css               #   Estilos
+  package.json                #   Dependencias (solo Vite)
+  public/workflows/           #   Copia de workflows para dev
 scripts/generate.py           # Script para generar desde CLI
 scripts/download_models.py    # Descarga modelos SDXL/FLUX
 output/                       # Imágenes generadas
